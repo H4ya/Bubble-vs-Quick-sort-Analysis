@@ -67,3 +67,24 @@ def quickSort(arr, key=None):
 #print(quickSort([2,5,1,5,-5,-4,3])) بس عشان اتأكد
 #print(bubbleSort([2,5,1,5,-5,-4,3]))
 
+
+def measure_time_space(data, key=None, algorithm_name=""):
+    
+    if(algorithm_name=="Bubble Sort"):
+        start_time = time.perf_counter() #performance counter (will store the exact starting time)
+        tracemalloc.start() #start tracing memory usage
+        sorted_data = bubbleSort(data.copy(), key)
+    else:
+        start_time = time.perf_counter() #performance counter (will store the exact starting time)
+        tracemalloc.start() #start tracing memory usage
+        sorted_data = quickSort(data.copy(), key)
+
+    end_time = time.perf_counter()
+    current, peak = tracemalloc.get_traced_memory() #Maximum memo use from start the trace until now 
+    tracemalloc.stop() #stop tracking memo
+    
+    executionT_ms = (end_time - start_time) * 1000 # second * 1000 = millisecond! thus, this line convert to millisecond
+    memoKB = peak / 1024 #convert bytes to KB
+    print(f"{algorithm_name} took: {executionT_ms:.2f} ms | 🧠 Memory: {memoKB:.2f} KB")
+    
+    return executionT_ms, memoKB, sorted_data
