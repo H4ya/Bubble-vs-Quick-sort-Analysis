@@ -88,3 +88,74 @@ def measure_time_space(data, key=None, algorithm_name=""):
     print(f"{algorithm_name} took: {executionT_ms:.2f} ms | 🧠 Memory: {memoKB:.2f} KB")
     
     return executionT_ms, memoKB, sorted_data
+
+
+def run_complete_analysis_on_your_data():
+
+    print("\n\t\tALGORITHMS ANALYSIS!!")
+    print("==================================")
+    
+    # Load YOUR dataset
+    
+    # Create test scenarios from the data
+    scenarios = testScenarios()
+    
+    results = []
+    
+    # Find available columns for sorting
+    sort_columns = []
+
+    sort_columns.append('Price')
+
+    if not sort_columns:
+        print("❌ No numeric columns found for sorting")
+        return
+    
+    for sort_col in sort_columns:
+        print(f"\n🎯 SORTING BY: {sort_col}")
+        print("-" * 40)
+        
+        for scenario_name, scenario_data in scenarios.items():
+            if len(scenario_data) < 2:
+                continue
+                
+            print(f"\n📊 Scenario: {scenario_name}")
+            print(f"   Records: {len(scenario_data)}")
+            
+            try:
+                # Test Bubble Sort
+                bubble_time, bubble_memory, bubble_sorted = measure_time_space(
+                    scenario_data, sort_col, "Bubble Sort"
+                )
+                
+                # Test Quick Sort
+                quick_time, quick_memory, quick_sorted = measure_time_space(
+                    scenario_data, sort_col, "Quick Sort"
+                )
+                
+                # Determine winner
+                winner = "BUBBLE" if bubble_time < quick_time else "QUICK"
+                improvement = max(bubble_time, quick_time) / min(bubble_time, quick_time)
+                
+                print(f"\n\n\t🏆 Winner: {winner} | 📈 Improvement: {improvement:.1f}x  !!!")
+                
+                # Store results
+                results.append({
+                    'scenario': scenario_name,
+                    'sort_column': sort_col,
+                    'bubble_time_ms': bubble_time,
+                    'quick_time_ms': quick_time,
+                    'bubble_memoKB': bubble_memory,
+                    'quick_memoKB': quick_memory,
+                    'winner': winner,
+                    'improvement_ratio': improvement,
+                    'data_size': len(scenario_data)
+                })
+                
+            except Exception as e:
+                print(f"   ❌ Error: {e}")
+                continue
+    
+    return results
+
+
