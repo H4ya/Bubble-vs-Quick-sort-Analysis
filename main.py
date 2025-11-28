@@ -90,55 +90,49 @@ def measure_time_space(data, key=None, algorithm_name=""):
     return executionT_ms, memoKB, sorted_data
 
 
-def run_complete_analysis_on_your_data():
+def dataAnalysisFunction():
 
-    print("\n\t\tALGORITHMS ANALYSIS!!")
+    print("\n\n\n\t<<ALGORITHMS ANALYSIS!!>>\n\n")
     print("==================================")
     
-    # Load YOUR dataset
-    
-    # Create test scenarios from the data
+    # load test scenarios from the data
     scenarios = testScenarios()
     
     results = []
     
-    # Find available columns for sorting
-    sort_columns = []
-
-    sort_columns.append('Price')
-
-    if not sort_columns:
-        print("❌ No numeric columns found for sorting")
+    if not sort_columns: #if no append habben to the sort_columns list
+        print("No good columns found for sorting")
         return
-    
+
     for sort_col in sort_columns:
-        print(f"\n🎯 SORTING BY: {sort_col}")
+        print(f"\nSorting by: {sort_col}!")
         print("-" * 40)
         
+        #* scenarios is dict, name is the key and data is the value!
         for scenario_name, scenario_data in scenarios.items():
             if len(scenario_data) < 2:
                 continue
-                
-            print(f"\n📊 Scenario: {scenario_name}")
-            print(f"   Records: {len(scenario_data)}")
+            
+            print(f"\nScenario: {scenario_name}")
+            print(f"   -Records: {len(scenario_data)}")
             
             try:
                 # Test Bubble Sort
-                bubble_time, bubble_memory, bubble_sorted = measure_time_space(
+                bubble_time, bubble_memory = measure_time_space(
                     scenario_data, sort_col, "Bubble Sort"
                 )
                 
                 # Test Quick Sort
-                quick_time, quick_memory, quick_sorted = measure_time_space(
+                quick_time, quick_memory = measure_time_space(
                     scenario_data, sort_col, "Quick Sort"
                 )
                 
                 # Determine winner
                 winner = "BUBBLE" if bubble_time < quick_time else "QUICK"
                 improvement = max(bubble_time, quick_time) / min(bubble_time, quick_time)
-                
-                print(f"\n\n\t🏆 Winner: {winner} | 📈 Improvement: {improvement:.1f}x  !!!")
-                
+                print('~'*30)
+                print(f"\n\n\t!!!  Winner: {winner} |  Improvement: {improvement:.1f}x  !!!\n\n")
+                print('~'*30)
                 # Store results
                 results.append({
                     'scenario': scenario_name,
@@ -153,9 +147,116 @@ def run_complete_analysis_on_your_data():
                 })
                 
             except Exception as e:
-                print(f"   ❌ Error: {e}")
+                print(f"    Error: {e}")
                 continue
     
     return results
+
+
+def create_simple_visualization(results, output_file="results_comparison.png"):
+    """
+    📈 Create simple visualization of results
+    """
+    if not results:
+        print("❌ No results to visualize")
+        return
+    
+    plt.figure(figsize=(12, 8))
+    
+    # Prepare data
+    scenarios = [f"{r['scenario']}\n({r['data_size']} rec)" for r in results]
+    bubble_times = [r['bubble_time_ms'] for r in results]
+    quick_times = [r['quick_time_ms'] for r in results]
+    
+    x = range(len(scenarios))
+    width = 0.35
+    
+    plt.bar([i - width/2 for i in x], bubble_times, width, label='Bubble Sort', color='red', alpha=0.7)
+    plt.bar([i + width/2 for i in x], quick_times, width, label='Quick Sort', color='blue', alpha=0.7)
+    
+    plt.xlabel('Test Scenarios')
+    plt.ylabel('Execution Time (milliseconds)')
+    plt.title('Bubble Sort vs Quick Sort Performance on Your Dataset')
+    plt.xticks(x, scenarios, rotation=45, ha='right')
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    
+    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+    plt.show()
+    
+    print(f"📊 Visualization saved as: {output_file}")
+
+
+def generate_final_report(results, dataFile):
+
+    if not results:
+        print("No results to report")
+        return
+    
+    print("\n" + "=" * 60)
+    print("FINAL ANALYSIS REPORT")
+    print("=" * 60)
+    
+    print(f"\nDataset Summary:")
+    print(f"   Total Records: {len(dataFile):,}")
+    print(f"   Total Columns: {len(dataFile.columns)}")
+    print(f"   Total Test Scenarios: {len(results)}")
+    
+    # Calculate wins
+    bubble_wins = sum(1 for r in results if r['winner'] == 'BUBBLE')
+    quick_wins = sum(1 for r in results if r['winner'] == 'QUICK')
+    # the iterative var is 'r'
+    # if the key in the results dict is winner and the valuse of it is XXXAlgXXX add 1 to xxx_Wins
+    print('='*20)
+    print(f"\n\tPerformance Summary:")
+    print(f" Bubble Sort Wins: {bubble_wins}")
+    print(f" Quick Sort Wins: {quick_wins}")
+    print(f"\n <<Best Overall: {'Bubble Sort' if bubble_wins >= quick_wins else 'Quick Sort'}>>")
+    
+    # Show best and worst cases
+    best_improvement = max(results, key=lambda x: x['improvement_ratio'])
+    worst_improvement = min(results, key=lambda x: x['improvement_ratio'])
+
+    print('='*20)
+    print(f"\n\tBest Case for Quick Sort:")
+    print(f" Scenario: {best_improvement['scenario']}")
+    print(f" Improvement: {best_improvement['improvement_ratio']:.1f}x faster")
+
+    print('='*20)
+    print(f"\n\tWorst Case for Quick Sort:")
+    print(f" Scenario: {worst_improvement['scenario']}")
+    print(f" Improvement: {worst_improvement['improvement_ratio']:.1f}x faster")
+
+#the MAIN code
+
+print(f"dataset path: {thePath}")
+print(f"Dataset contain: {len(dataFile)} records, {len(dataFile.columns)} columns")#print records and columns
+print("Columns available:")#print names of the columns
+for i, column in enumerate(dataFile.columns, 1):
+    print(f"\t{i}.\t{column}")
+
+# Convert to list of dictionaries for sorting
+data_dict = dataFile.to_dict('records')
+
+try:
+    # Run complete analysis on YOUR dataset
+    results = dataAnalysisFunction()
+    
+    if results:
+        # Create visualization
+        create_simple_visualization(results)
+        
+        # Generate final report
+        generate_final_report(results, dataFile)
+        
+        print(f"\nThe end~")
+        print(f"Check the generated chart: results_comparison.png")
+    
+except FileNotFoundError:
+    print(f"File not found\wrong path: {thePath}")
+    print("Please update the file path in the globals block")
+except Exception as e:
+    print(f"Error: {e}")
 
 
