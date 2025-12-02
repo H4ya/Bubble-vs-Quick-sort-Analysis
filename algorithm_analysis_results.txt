@@ -1,0 +1,43 @@
+ALGORITHM PERFORMANCE ANALYSIS RESULTS
+==================================================
+Analysis Date: 2025-11-27 18:24:22
+Total Records: 441
+Number of Scenarios: 4
+
+SCENARIO: البيانات_الكاملة_20240428
+  Winner: Quick Sort
+  Bubble Sort Time: 0.000352 seconds
+  Quick Sort Time: 0.000136 seconds
+  Bubble Sort Memory: 3.67 KB
+  Quick Sort Memory: 10.73 KB
+  Improvement Ratio: 2.59x
+
+SCENARIO: شبه_مرتب_حسب_السعر_20240428
+  Winner: Quick Sort
+  Bubble Sort Time: 0.000389 seconds
+  Quick Sort Time: 0.000141 seconds
+  Bubble Sort Memory: 3.64 KB
+  Quick Sort Memory: 11.55 KB
+  Improvement Ratio: 2.76x
+
+SCENARIO: عشوائي_20240428
+  Winner: Quick Sort
+  Bubble Sort Time: 0.063468 seconds
+  Quick Sort Time: 0.000173 seconds
+  Bubble Sort Memory: 3.68 KB
+  Quick Sort Memory: 10.70 KB
+  Improvement Ratio: 367.93x
+
+SCENARIO: عكسي_حسب_السعر_20240428
+  Winner: Quick Sort
+  Bubble Sort Time: 0.000310 seconds
+  Quick Sort Time: 0.000112 seconds
+  Bubble Sort Memory: 3.64 KB
+  Quick Sort Memory: 10.70 KB
+  Improvement Ratio: 2.78x
+
+
+FINAL STATISTICS:
+  Bubble Sort Wins: 0
+  Quick Sort Wins: 4
+  Best Overall Algorithm: Quick Sort
